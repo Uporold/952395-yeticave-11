@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Василий](https://up.htmlacademy.ru/php/11/user/952395).
-* Наставник: `Неизвестно`.
+* Наставник: [Владислав Малиничев](https://htmlacademy.ru/profile/id415943).
 
 ---
 
