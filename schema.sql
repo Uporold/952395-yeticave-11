@@ -34,3 +34,11 @@ CREATE TABLE users (
   password VARCHAR(64) NOT NULL,
   contacts VARCHAR(128) NOT NULL
 );
+
+CREATE UNIQUE INDEX name ON lots(name);
+CREATE UNIQUE INDEX path ON lots(path);
+CREATE UNIQUE INDEX email ON users(email);
+CREATE INDEX user_name ON users(name);
+CREATE INDEX lot_descr ON lots(text);
+CREATE INDEX start_price ON lots(st_price);
+
