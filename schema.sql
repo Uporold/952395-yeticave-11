@@ -15,15 +15,15 @@ CREATE TABLE lots (
   name     VARCHAR(64) UNIQUE NOT NULL,
   text     VARCHAR(255),
   path     VARCHAR(128) UNIQUE,
-  st_price VARCHAR(64) NOT NULL,
+  st_price INT NOT NULL,
   dt_end   TIMESTAMP NOT NULL,
-  bet_step VARCHAR(64) NOT NULL
+  bet_step INT NOT NULL
 );
 
 CREATE TABLE bets (
   id       INT AUTO_INCREMENT PRIMARY KEY,
   dt_add   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  value    VARCHAR(64) NOT NULL
+  value    INT NOT NULL
 );
 
 CREATE TABLE users (
