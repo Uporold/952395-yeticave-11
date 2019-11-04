@@ -20,7 +20,7 @@ CREATE TABLE lots (
   text     VARCHAR(255),
   bet_step INT,
   autor_id INT NOT NULL,
-  winner_id INT
+  winner_id INT 
 );
 
 CREATE TABLE bets (
