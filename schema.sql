@@ -20,7 +20,7 @@ CREATE TABLE lots (
   text     VARCHAR(255),
   bet_step INT,
   autor_id INT NOT NULL,
-  winner_id INT
+  winner_id INT DEFAULT 0
 );
 
 CREATE TABLE bets (
@@ -48,4 +48,3 @@ CREATE INDEX name ON users(name);
 CREATE INDEX cat_name ON categories(cat_name);
 CREATE INDEX value ON bets(value);
 CREATE INDEX start_price ON lots(st_price);
-
