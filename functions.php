@@ -1,4 +1,5 @@
 <?php
+
 function priceFormatting ($price) {
     $ceilPrice = ceil($price);
 
@@ -44,4 +45,6 @@ function timeExp(string $date) {
 
     return $expInfo;
 };
+
+
 ?>
