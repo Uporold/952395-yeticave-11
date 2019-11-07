@@ -3,7 +3,7 @@ VALUES ('Доски и лыжи', 'boards'),
        ('Крепления', 'attachment'),
        ('Ботинки', 'boots'),
        ('Одежда', 'clothing'),
-       ('Инструменты', 'toold'),
+       ('Инструменты', 'tools'),
        ('Разное', 'other');
 
 INSERT INTO users (email, name, password, contacts, lot_id, bet_id)
@@ -37,7 +37,7 @@ ORDER BY l.dt_add
  Получить также название категории, к которой принадлежит лот;*/
 SELECT l.id, lot_name, cat_name FROM lots l /*3*/
 JOIN categories c
-ON l.id = c.id;
+ON l.id = c.id
 WHERE l.id = 1;
 
 /*обновить название лота по его идентификатору;*/
