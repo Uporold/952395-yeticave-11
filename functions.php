@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Получает значение цены и возвращает отформатированное значение
+ * с делением на разряды и добавлением знака рубля.
+ * @param int $price Цена для форматирования
+ * @return int Отформатированное значение цены
+ */
 function priceFormatting ($price) {
     $ceilPrice = ceil($price);
 
@@ -9,8 +14,14 @@ function priceFormatting ($price) {
         $formattedPrice = number_format($ceilPrice, 0, $dec_point = "", $thousands_sep = " ");
     }
     return $formattedPrice . " ₽";
-};
+}
 
+/**
+ * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ * @param string $name Путь к файлу шаблона относительно папки templates
+ * @param array $data Ассоциативный массив с данными для шаблона
+ * @return string Итоговый HTML
+ */
 function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
@@ -26,8 +37,13 @@ function include_template($name, $data) {
     $result = ob_get_clean();
 
     return $result;
-};
+}
 
+/**
+ * Получает строку, преобразует специальные символы в HTML сущности
+ * @param string $str Строка для преобразования
+ * @return string Итоговый преобразованный текст
+ */
 function esc($str) {
 	$text = htmlspecialchars($str);
 	return $text;
@@ -44,7 +60,5 @@ function timeExp(string $date) {
     $expInfo = ['часы' => $hours_to_expire, 'минуты' => $minutes_to_expire];
 
     return $expInfo;
-};
+}
 
-
-?>
