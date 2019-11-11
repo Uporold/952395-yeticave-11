@@ -1,6 +1,7 @@
 <?php
 $is_auth;
 $user_name;
+$container;
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +48,7 @@ $user_name;
     </div>
 </header>
 
-<main class="container">
+<main class="<?php if ($container == 1) echo 'container'; ?>">
     <?=$content;?>
 </main>
 </div>
