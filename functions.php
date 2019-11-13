@@ -49,6 +49,11 @@ function esc($str) {
 	return $text;
 };
 
+/**
+ * Получает дату в формате ГГГГ-ММ-ДД, возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах;
+ * @param date $date Получаемая дата
+ * @return array $expInfo Итоговый массив
+ */
 function timeExp(string $date) {
     date_default_timezone_set("Europe/Moscow");
     setlocale(LC_ALL, 'ru_RU');
@@ -116,6 +121,13 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     return $stmt;
 }
 
+/**
+ * Получает значение для сравнения и массив, ищет данное значение в массиве
+ * @param int $id Получаемое значение
+ * @param array $allowed_list Массив-список для сравнения
+ * @return string Возвращает строку с предупреждением при отсутствии совпадений
+ * @return null Найдено соответствие
+ */
 function validateCategory($id, $allowed_list) {
     if (!in_array($id, $allowed_list)) {
         return "Указана несуществующая категория";
@@ -123,7 +135,14 @@ function validateCategory($id, $allowed_list) {
 
     return null;
 }
-
+/**
+ * Получает значение для сравнения и его допустимые минимальное и максимальное значения
+ * @param int $value Получаемое значение
+ * @param int $min Минимальное допустимое значение
+ * @param int $max Максимальное допустимое значение
+ * @return string Возвращает строку с предупреждением при несоотсветсвии $min или $max
+ * @return null Несоответствие не найдено
+ */
 function validateLength($value, $min, $max) {
     if ($value) {
         $len = strlen($value);
@@ -135,6 +154,12 @@ function validateLength($value, $min, $max) {
     return null;
 }
 
+/**
+ * Получает значение для сравнения и сравнивает его с нулём
+ * @param int $value Получаемое значение
+ * @return string Возвращает строку с предупреждением при $value < 0
+ * @return null Возвращает при $value > 0
+ */
 function validateNumber($value) {
     if ($value > 0) {
         return null;
