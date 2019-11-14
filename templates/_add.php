@@ -24,7 +24,7 @@
             <option>Выберите категорию</option>
             <?php foreach ($categories as $category): ?>
                 <option value="<?=$category['id'] ?>"
-                <?php if ($category['id'] == getPostVal('cat_id')): ?>selected<?php endif; ?>><?=$category['cat_name']; ?>
+                <?php if ($category['id'] === getPostVal('cat_id')): ?>selected<?php endif; ?>><?=$category['cat_name']; ?>
                 </option>
             <?php endforeach; ?>
           </select>
