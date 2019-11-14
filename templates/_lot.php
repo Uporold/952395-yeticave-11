@@ -14,10 +14,10 @@
       <div class="lot-item__content">
         <div class="lot-item__left">
           <div class="lot-item__image">
-            <img src="<?=esc($lot['path']); ?>" width="730" height="548" alt="<?=$lot['lot_name']; ?><">
+            <img src="../uploads/<?=esc($lot['path']); ?>" width="730" height="548" alt="<?=$lot['lot_name']; ?>">
           </div>
           <p class="lot-item__category">Категория: <span><?=esc($lot['cat_name']); ?></span></p>
-          <p class="lot-item__description"></p>
+          <p class="lot-item__description"><?=esc($lot['text']); ?></p>
         </div>
         <div class="lot-item__right">
           <div class="lot-item__state">

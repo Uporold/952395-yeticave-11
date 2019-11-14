@@ -20,6 +20,19 @@ function is_date_valid(string $date) : bool {
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
 
+function timeExp(string $date) {
+    date_default_timezone_set("Europe/Moscow");
+    setlocale(LC_ALL, 'ru_RU');
+
+    $expDate = strtotime($date);
+    $secs_to_expire = $expDate - time();
+    $hours_to_expire = str_pad(floor($secs_to_expire / 3600), 2, "0", STR_PAD_LEFT);
+    $minutes_to_expire = str_pad(floor(($secs_to_expire % 3600) / 60), 2, "0", STR_PAD_LEFT);
+    $expInfo = ['часы' => $hours_to_expire, 'минуты' => $minutes_to_expire];
+
+    return $expInfo;
+}
+
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
