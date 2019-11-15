@@ -1,6 +1,6 @@
 <?php
-require_once('functions.php');
-require_once('init.php');
+require_once 'functions.php';
+require_once 'init.php';
 $container = 0;
 
 $sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
@@ -11,10 +11,6 @@ if ($result) {
     print("Ошибка подключения: ". mysqli_connect_error());
 }
 
-$sql = 'SELECT * FROM lots';
-$res = mysqli_query($con, $sql);
-$num = mysqli_num_rows($res);
-
 if (isset($_GET['id'])) {
     $lot_id = $_GET['id'];
 }
@@ -23,17 +19,22 @@ $sql = 'SELECT * FROM lots l '
     . 'JOIN categories ON categories.id = l.cat_id '
     . 'WHERE l.id = ' . $lot_id;
 
-if ($result = mysqli_query($con, $sql)) {
-    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    $page_content = include_template('_lot.php', ['lots' => $lots, 'categories' => $categories]);
-}
+    $result = mysqli_query($con, $sql);
+    $num = mysqli_num_rows($result);
 
-if ($_GET['id'] > $num) {
-    $error = "Не удалось соединиться с базой данных.";
-    $page_content = include_template('error.php', ['error' => $error]);
-    http_response_code(404);
+if ($result) {
+    if (!$num) {
+        $error = "Не удалось соединиться с базой данных.";
+        $page_content = include_template('error.php', ['error' => $error]);
+        http_response_code(404);
+    } else {
+        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $page_content = include_template('_lot.php', ['lots' => $lots, 'categories' => $categories]);
+        var_dump($result);
+    }
+} else {
+    show_error($page_content, mysqli_error($con));
 }
-
 
  $layout_content = include_template('layout.php', [
     'content' => $page_content,

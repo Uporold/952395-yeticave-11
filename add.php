@@ -1,6 +1,6 @@
 <?php
-require_once('functions.php');
-require_once('init.php');
+require_once 'functions.php';
+require_once 'init.php';
 $container = 0;
 
 
@@ -13,7 +13,7 @@ if ($res) {
     $cats_ids = array_column($categories, 'id');
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $required = ['lot_name', 'cat_id', 'text', 'st_price', 'bet_step', 'dt_end'];
     $errors = [];
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ];
 
     $lot = filter_input_array(INPUT_POST, ['lot_name' => FILTER_DEFAULT, 'text' => FILTER_DEFAULT,
-    'lot_name' => FILTER_DEFAULT, 'st_price' => FILTER_DEFAULT, 'bet_step' => FILTER_DEFAULT, 'dt_end' => FILTER_DEFAULT,
+   'st_price' => FILTER_DEFAULT, 'bet_step' => FILTER_DEFAULT, 'dt_end' => FILTER_DEFAULT,
     'cat_id' => FILTER_DEFAULT], true);
 
     foreach ($lot as $key => $value) {
@@ -74,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('_add.php', ['lot' => $lot, 'errors' => $errors, 'categories' => $categories]);
     } else {
-        $sql = 'INSERT INTO lots (dt_add, autor_id, lot_name, cat_id, text, st_price, bet_step, dt_end, path)
-            VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO lots (dt_add, autor_id, lot_name, text, st_price, bet_step, dt_end, cat_id, path)
+        VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)';
 
         $stmt = db_get_prepare_stmt($con, $sql, $lot);
         $res = mysqli_stmt_execute($stmt);

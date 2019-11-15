@@ -28,7 +28,7 @@ $container;
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
         <nav class="user-menu">
-            <?php if ($is_auth == 1): ?>
+            <?php if ($is_auth === 1): ?>
                 <div class="user-menu__logged">
                     <p><?= $user_name; ?></p>
                     <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
@@ -48,7 +48,7 @@ $container;
     </div>
 </header>
 
-<main class="<?php if ($container == 1) echo 'container'; ?>">
+<main class="<?php if ($container === 1) echo 'container'; ?>">
     <?=$content;?>
 </main>
 </div>
