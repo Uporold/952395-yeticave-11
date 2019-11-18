@@ -2,7 +2,7 @@
 require_once 'init.php';
 require_once 'functions.php';
 $container = 0;
-
+$errors = null;
 
 $sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
 $res = mysqli_query($con, $sql);
@@ -10,7 +10,13 @@ if ($res) {
     $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (isset($_SESSION['user'])) {
+    http_response_code(403);
+    header("Location: /");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form = $_POST;
     $errors = [];
 
@@ -65,9 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     }
-
-    $tpl_data['errors'] = $errors;
-    $tpl_data['values'] = $form;
 }
 $page_content = include_template('_reg.php', ['categories' => $categories, 'errors' => $errors]);
 $layout_content = include_template('layout.php', [
@@ -76,6 +79,6 @@ $layout_content = include_template('layout.php', [
     'categories' => [],
     'is_auth' => rand(0, 1),
     'user_name' => 'Василий',
-    'title'      => 'GifTube | Регистрация'
+    'title'      => 'Yeticave | Регистрация'
 ]);
 echo $layout_content;

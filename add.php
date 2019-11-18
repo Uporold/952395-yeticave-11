@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page_content = include_template('_add.php', ['lot' => $lot, 'errors' => $errors, 'categories' => $categories]);
     } else {
         $sql = 'INSERT INTO lots (dt_add, autor_id, lot_name, text, st_price, bet_step, dt_end, cat_id, path)
-        VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)';
+        VALUES (NOW(), "' . $_SESSION['user']['id'] . '", ?, ?, ?, ?, ?, ?, ?)';
 
         $stmt = db_get_prepare_stmt($con, $sql, $lot);
         $res = mysqli_stmt_execute($stmt);
@@ -87,6 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     $page_content = include_template('_add.php', ['categories' => $categories]);
+}
+
+if (!isset($_SESSION['user'])) {
+    $error = "Публикация лотов доступна только зарегистрированным пользователям, Вы будете перенаправлены на главную страницу через 3 секунды.";
+    $page_content = include_template('error.php', ['error' => $error]);
+    header('Refresh: 3; url="/"');
+    http_response_code(403);
 }
 
 $layout_content = include_template('layout.php', [

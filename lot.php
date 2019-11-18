@@ -30,7 +30,7 @@ if ($result) {
     } else {
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
         $page_content = include_template('_lot.php', ['lots' => $lots, 'categories' => $categories]);
-        var_dump($result);
+        //var_dump($result);
     }
 } else {
     show_error($page_content, mysqli_error($con));

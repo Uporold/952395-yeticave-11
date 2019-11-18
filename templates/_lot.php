@@ -20,6 +20,7 @@
           <p class="lot-item__description"><?=esc($lot['text']); ?></p>
         </div>
         <div class="lot-item__right">
+        <?php if (isset($_SESSION['user'])): ?>
           <div class="lot-item__state">
             <div class="lot-item__timer timer <?php if (timeExp($lot['dt_end'])['часы'] < 1) echo ' timer--finishing'; ?>">
                 <?php if (timeExp($lot['dt_end'])['часы'] >=0 && timeExp($lot['dt_end'])['минуты'] >=0): ?>
@@ -38,6 +39,7 @@
               </div>
             </div>
           </div>
+          <?php endif; ?>
         </div>
       </div>
     </section>
