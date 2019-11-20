@@ -16,17 +16,18 @@ $q = filter_input(INPUT_GET, 'q');
     if ($q == $_GET['q']) {
         $sort_field = $_GET['q'];
     }
-    $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
-    . 'JOIN categories ON categories.id = lots.cat_id '
-    . 'WHERE categories.code ="' . $sort_field . '"'
-    . 'ORDER BY dt_add DESC LIMIT 9';
     $cur_page = $_GET['page'] ?? 1;
     $page_items = 1;
-    $result = mysqli_query($con, $sql);
-    $items_count = mysqli_num_rows($result);
+    $result = mysqli_query($con, 'SELECT COUNT(*) as cnt FROM lots '
+    . 'JOIN categories ON categories.id = lots.cat_id '
+    . 'WHERE categories.code ="' . $sort_field . '"'
+    . 'ORDER BY dt_add DESC LIMIT 9');
+    $items_count = mysqli_fetch_assoc($result)['cnt'];
     $pages_count = ceil($items_count / $page_items);
     $offset = ($cur_page - 1) * $page_items;
+    var_dump($result);
     $pages = range(1, $pages_count);
+
 
     $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
@@ -35,10 +36,7 @@ $q = filter_input(INPUT_GET, 'q');
 
     if ($res = mysqli_query($con, $sql)) {
         $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
-       /* $page_content = include_template('_category.php', ['lots' => $lots, 'categories' => $categories, 'pages' => $pages,
-    'pages_count' => $pages_count,
-    'cur_page' => $cur_page, 'link' => $link]);*/
-    $page_content = include_template('_category.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link'));
+        $page_content = include_template('_category.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link'));
     } else {
         $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
     }
