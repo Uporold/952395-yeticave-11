@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[$field] = 'Это поле надо заполнить';
         }
     }
-    var_dump($errors);
+    //var_dump($errors);
     $errors = array_filter($errors);
 
     $email = mysqli_real_escape_string($con, $form['email']);
@@ -41,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (count($errors)) {
-        $page_content = include_template('_login.php', ['form' => $form, 'errors' => $errors, 'categories' => $categories]);
+        //$page_content = include_template('_login.php', ['form' => $form, 'errors' => $errors, 'categories' => $categories]);
+        $page_content = include_template('_login.php', compact('form', 'errors', 'categories'));
+
     } else {
         header("Location: /index.php");
         exit();

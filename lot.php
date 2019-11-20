@@ -29,7 +29,8 @@ if ($result) {
         http_response_code(404);
     } else {
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $page_content = include_template('_lot.php', ['lots' => $lots, 'categories' => $categories]);
+        //$page_content = include_template('_lot.php', ['lots' => $lots, 'categories' => $categories]);
+        $page_content = include_template('_lot.php', compact('lots', 'categories'));
         //var_dump($result);
     }
 } else {
