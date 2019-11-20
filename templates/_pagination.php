@@ -8,7 +8,8 @@
             <a href="<?=$link;?>?q=<?=$_GET['q'];?>&page=<?=$page;?>"><?=$page;?></a>
         </li>
         <?php endforeach; ?>
-        <li class="pagination-item pagination-item-next"><a href="<?=$link;?>?q=<?=$_GET['q'];?>&page=<?=$cur_page+1;?>">Вперед</a></li>
+        <li class="pagination-item pagination-item-next">
+        <a <?php if ($cur_page < $page): ?>href="<?=$link;?>?q=<?=$_GET['q'];?>&page=<?=$cur_page+1;?>"<?php endif; ?>>Вперед</a></li>
       </ul>
     </div>
     <?php endif; ?>
