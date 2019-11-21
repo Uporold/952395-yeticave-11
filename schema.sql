@@ -48,3 +48,5 @@ CREATE INDEX name ON users(name);
 CREATE INDEX cat_name ON categories(cat_name);
 CREATE INDEX value ON bets(value);
 CREATE INDEX start_price ON lots(st_price);
+CREATE FULLTEXT INDEX lot_ft_search
+ON lots(lot_name, text);
