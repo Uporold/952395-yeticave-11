@@ -72,14 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-//$page_content = include_template('_reg.php', ['categories' => $categories, 'errors' => $errors]);
+
 $page_content = include_template('_reg.php', compact('categories', 'errors'));
 $layout_content = include_template('layout.php', [
     'content'    => $page_content,
     'container' => $container,
     'categories' => [],
-    'is_auth' => rand(0, 1),
-    'user_name' => 'Василий',
     'title'      => 'Yeticave | Регистрация'
 ]);
 echo $layout_content;

@@ -9,7 +9,7 @@ $result = mysqli_query($con, $sql);
 if ($result) {
     $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 } else {
-    print("Ошибка подключения: ". mysqli_connect_error());
+    echo "Ошибка подключения: ". mysqli_connect_error();
 }
 $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
@@ -25,8 +25,6 @@ $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'categories' => $categories,
     'title' => 'YetiCave - Главная страница',
-    'is_auth' => rand(0, 1),
-    'user_name' => 'Василий',
     'container' => $container
 ]);
 

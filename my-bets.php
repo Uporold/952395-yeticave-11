@@ -8,7 +8,7 @@ $result = mysqli_query($con, $sql);
 if ($result) {
     $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 } else {
-    print("Ошибка подключения: ". mysqli_connect_error());
+    echo "Ошибка подключения: ". mysqli_connect_error();
 }
 
 if (!isset($_SESSION['user'])) {

@@ -8,7 +8,7 @@ $result = mysqli_query($con, $sql);
 if ($result) {
     $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 } else {
-    print("Ошибка подключения: ". mysqli_connect_error());
+    echo "Ошибка подключения: ". mysqli_connect_error();
 }
 
 if (isset($_GET['id'])) {
@@ -51,7 +51,7 @@ if ($result) {
     show_error($page_content, mysqli_error($con));
 }
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (empty($_POST['value'])) {
         $error = 'Пожалуйста, заполните поле';
     } elseif (!filter_var($_POST['value'], FILTER_VALIDATE_INT)) {
@@ -77,8 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     'content' => $page_content,
     'container' => $container,
     'categories' => $categories,
-    'title' => 'YetiCave - ' . $lots[0]['lot_name'],
-    'is_auth' => rand(0, 1),
-    'user_name' => 'Василий'
+    'title' => 'YetiCave - ' . esc($lots[0]['lot_name'])
 ]);
 echo $layout_content;

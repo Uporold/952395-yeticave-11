@@ -100,8 +100,6 @@ $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'container' => $container,
     'categories' => [],
-    'title' => 'YetiCave - Добавление лота',
-    'is_auth' => rand(0, 1),
-    'user_name' => 'Василий'
+    'title' => 'YetiCave - Добавление лота'
 ]);
 echo $layout_content;

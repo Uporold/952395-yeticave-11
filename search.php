@@ -1,8 +1,6 @@
 <?php
 require_once 'init.php';
 $container = 0;
-$link = '/search.php?q';
-$val = 'q';
 
     $sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
     $res = mysqli_query($con, $sql);
@@ -24,7 +22,9 @@ $val = 'q';
         . "WHERE MATCH(lot_name, text) AGAINST( '". $search ."') AND dt_end > NOW()");
 
         $items_count = mysqli_fetch_assoc($result)['cnt'];
-        $pages_count = ceil($items_count / $page_items);
+        if ($page_items > 0) {
+            $pages_count = ceil($items_count / $page_items);
+        }
         $offset = ($cur_page - 1) * $page_items;
         $pages = range(1, $pages_count);
         $sql = "SELECT lots.id, lot_name, cat_id, cat_name, st_price, path, dt_add, dt_end, text, bet_step FROM lots "
@@ -50,6 +50,6 @@ $val = 'q';
         'categories' => [],
         'is_auth' => rand(0, 1),
         'user_name' => 'Василий',
-        'title'      => 'Yeticave - результат по запросу ' . $_GET['q']
+        'title'      => 'Yeticave - результат по запросу ' . esc($_GET['q'])
     ]);
     echo $layout_content;

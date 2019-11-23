@@ -2,15 +2,12 @@
 require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
-$val = 'tab';
-
-$link = '/category.php?tab';
 $sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
 $result = mysqli_query($con, $sql);
 if ($result) {
     $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 } else {
-    print("Ошибка подключения: ". mysqli_connect_error());
+    echo "Ошибка подключения: ". mysqli_connect_error();
 }
 
 $tab = filter_input(INPUT_GET, 'tab');
@@ -24,7 +21,9 @@ $tab = filter_input(INPUT_GET, 'tab');
     . 'WHERE categories.code ="' . $sort_field . '" AND dt_end > NOW()'
     . 'ORDER BY dt_add DESC LIMIT 9');
     $items_count = mysqli_fetch_assoc($result)['cnt'];
-    $pages_count = ceil($items_count / $page_items);
+    if ($page_items > 0) {
+        $pages_count = ceil($items_count / $page_items);
+    }
     $offset = ($cur_page - 1) * $page_items;
     $pages = range(1, $pages_count);
 
@@ -44,9 +43,7 @@ $tab = filter_input(INPUT_GET, 'tab');
         'content' => $page_content,
         'categories' => $categories,
         'container' => $container,
-        'title' => 'YetiCave - ' . $lots[0]['cat_name'],
-        'is_auth' => rand(0, 1),
-        'user_name' => 'Василий'
+        'title' => 'YetiCave - ' . esc($lots[0]['cat_name'])
     ]);
 
     echo $layout_content;
