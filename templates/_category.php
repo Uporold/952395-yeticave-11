@@ -1,8 +1,8 @@
 <nav class="nav">
       <ul class="nav__list container">
       <?php foreach ($categories as $category): ?>
-        <li class="nav__item <?php if ($category['code'] == $_GET['q']): ?>nav__item--current<?php endif; ?>">
-            <a href="/category.php?q=<?=$category['code']?>"><?=$category['cat_name'];?></a>
+        <li class="nav__item <?php if ($category['code'] == $_GET['tab']): ?>nav__item--current<?php endif; ?>">
+            <a href="/category.php?tab=<?=$category['code']?>"><?=$category['cat_name'];?></a>
         </li>
         <?php endforeach; ?>
       </ul>
@@ -22,7 +22,8 @@
             'pages' => $pages,
             'pages_count' => $pages_count,
             'cur_page' => $cur_page,
-            'link' => $link
+            'link' => $link,
+            'val' => $val
     ]); ?>
 
     </div>

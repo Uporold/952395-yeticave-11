@@ -1,9 +1,7 @@
 <nav class="nav">
       <ul class="nav__list container">
       <?php foreach ($categories as $category): ?>
-        <li class="nav__item">
-            <a href="pages/all-lots.html"><?=$category['cat_name'];?></a>
-        </li>
+        <?=include_template('_categories-footer.php', ['category' => $category]); ?>
         <?php endforeach; ?>
       </ul>
     </nav>
@@ -51,7 +49,7 @@
         <div class="form__item form__item--small <?= $classname; ?>">
           <label for="st_price">Начальная цена <sup>*</sup></label>
           <input id="st_price" type="text" name="st_price" placeholder="0" value="<?= getPostVal('st_price'); ?>">
-          <span class="form__error">Введите начальную цену</span>
+          <span class="form__error"><?=validateNumber($lot['st_price']);?></span>
         </div>
         <?php $classname = isset($errors['bet_step']) ? "form__item--invalid" : ""; ?>
         <div class="form__item form__item--small <?= $classname; ?>">

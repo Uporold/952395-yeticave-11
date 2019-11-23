@@ -72,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['file'] = 'Вы не загрузили файл';
     }
     if (count($errors)) {
-        //$page_content = include_template('_add.php', ['lot' => $lot, 'errors' => $errors, 'categories' => $categories]);
         $page_content = include_template('_add.php', compact('lot', 'errors', 'categories'));
     } else {
         $sql = 'INSERT INTO lots (dt_add, autor_id, lot_name, text, st_price, bet_step, dt_end, cat_id, path)

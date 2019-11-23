@@ -9,7 +9,7 @@ function priceFormatting ($price) {
     $ceilPrice = ceil($price);
 
     if ($ceilPrice < 1000) {
-        return $ceilPrice;
+        return $ceilPrice . " ₽";
     } else if ($ceilPrice >= 1000) {
         $formattedPrice = number_format($ceilPrice, 0, $dec_point = "", $thousands_sep = " ");
     }
@@ -162,6 +162,10 @@ function validateLength($value, $min, $max) {
  */
 function validateNumber($value) {
     if ($value > 0) {
+        if(!filter_var($value, FILTER_VALIDATE_INT)){
+            return "Значение должно быть целым числом!";
+
+        }
         return null;
     }
     else {
@@ -195,4 +199,26 @@ function dateCheck($date) {
  else {
      return "Неверный формат даты";
  }
+}
+/**
+ * Определяет сколько прошло времени с указанной даты
+ *
+ * @param string $time дата
+ * @return string прошедшее время с указанной даты в формате в соответсвтии с условием
+ */
+function timeAgo($time)
+{
+    $dif = time() - strtotime($time);
+    $days = floor($dif / 86400);
+    $hours = floor(($dif % 86400) / 3600);
+    $minutes = floor(($dif % 86400 % 3600) / 60);
+    if ($days == 0 && $hours == 0 && $minutes < 1) {
+        return "Только что";
+    } elseif ($days == 0 && $hours == 0 && $minutes < 60) {
+        return "$minutes мин. назад";
+    } elseif ($days == 0 && $hours < 24) {
+        return "$hours час. назад";
+    } else {
+        return date('d.m.y в H:i', strtotime($time));
+    }
 }

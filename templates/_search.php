@@ -18,5 +18,6 @@
             'pages' => $pages,
             'pages_count' => $pages_count,
             'cur_page' => $cur_page,
-            'link' => $link
+            'link' => $link,
+            'val' => $val
     ]); ?>

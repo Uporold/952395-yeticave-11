@@ -1,9 +1,7 @@
 <nav class="nav">
       <ul class="nav__list container">
       <?php foreach ($categories as $category): ?>
-        <li class="nav__item">
-            <a href="pages/all-lots.html"><?=$category['cat_name'];?></a>
-        </li>
+        <?=include_template('_categories-footer.php', ['category' => $category]); ?>
         <?php endforeach; ?>
       </ul>
     </nav>

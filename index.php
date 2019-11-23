@@ -13,6 +13,7 @@ if ($result) {
 }
 $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
+    . 'WHERE dt_end > NOW()'
     . 'ORDER BY dt_add DESC LIMIT 9';
 if ($res = mysqli_query($con, $sql)) {
     $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -25,7 +26,8 @@ $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'title' => 'YetiCave - Главная страница',
     'is_auth' => rand(0, 1),
-    'user_name' => 'Василий'
+    'user_name' => 'Василий',
+    'container' => $container
 ]);
 
 echo $layout_content;

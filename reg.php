@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($res && empty($errors)) {
-            header("Location: /enter.php");
+            header("Location: /login.php");
             exit();
         }
     }
