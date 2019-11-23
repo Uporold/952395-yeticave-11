@@ -19,7 +19,7 @@ $container = 0;
         $page_items = 1;
         $result = mysqli_query($con, "SELECT COUNT(*) as cnt FROM lots "
         . "JOIN categories ON lots.cat_id  = categories.id "
-        . "WHERE MATCH(lot_name, text) AGAINST( '". $search ."') AND dt_end > NOW()");
+        . "WHERE MATCH(lot_name, text) AGAINST( '". esc($search) ."') AND dt_end > NOW()");
 
         $items_count = mysqli_fetch_assoc($result)['cnt'];
         if ($page_items > 0) {
