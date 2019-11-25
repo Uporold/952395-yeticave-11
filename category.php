@@ -24,14 +24,16 @@ $tab = filter_input(INPUT_GET, 'tab');
     if ($page_items > 0) {
         $pages_count = ceil($items_count / $page_items);
     }
+    $offset = ($cur_page - 1) * $page_items;
     $pages = range(1, $pages_count);
 
 
     $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
     . 'WHERE categories.code ="' . $sort_field . '" AND dt_end > NOW()'
-    . 'ORDER BY dt_add DESC ';
-    if ($res = mysqli_query($con, pagination($sql, $page_items, $cur_page))) {
+    . 'ORDER BY dt_add DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
+
+    if ($res = mysqli_query($con, $sql)) {
         $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
         $page_content = include_template('_category.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link', 'val'));
     } else {

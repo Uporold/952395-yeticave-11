@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Получает значение цены и возвращает отформатированное значение
  * с делением на разряды и добавлением знака рубля.
@@ -222,10 +221,4 @@ function timeAgo($time)
     } else {
         return date('d.m.y в H:i', strtotime($time));
     }
-}
-
- function pagination($sql, $page_items, $cur_page) {
-    $offset = ($cur_page - 1) * $page_items;
-    $sql = $sql . ' LIMIT ' . $page_items . ' OFFSET ' . $offset;
-    return $sql;
 }

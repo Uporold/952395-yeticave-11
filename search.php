@@ -34,7 +34,6 @@ $container = 0;
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
         if ($pages_count <= 0) {
             $error = "Ничего не найдено по вашему запросу.";
