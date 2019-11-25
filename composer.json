@@ -1,6 +1,0 @@
-{
-    "name": "uporo/952395-yeticave-11",
-    "require": {
-        "swiftmailer/swiftmailer": "^6.0"
-    }
-}
