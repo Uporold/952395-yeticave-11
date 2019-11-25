@@ -25,17 +25,15 @@ $container = 0;
         if ($page_items > 0) {
             $pages_count = ceil($items_count / $page_items);
         }
-        //$offset = ($cur_page - 1) * $page_items;
+        $offset = ($cur_page - 1) * $page_items;
         $pages = range(1, $pages_count);
         $sql = "SELECT lots.id, lot_name, cat_id, cat_name, st_price, path, dt_add, dt_end, text, bet_step FROM lots "
           . "JOIN categories ON lots.cat_id  = categories.id "
           . "WHERE MATCH(lot_name, text) AGAINST(?) AND dt_end > NOW() "
-          . "ORDER BY dt_add DESC ";
-          //. "ORDER BY dt_add DESC LIMIT " . $page_items . " OFFSET " . $offset;
-        $stmt = db_get_prepare_stmt($con, pagination($sql, $page_items, $cur_page), [$search]);
+          . "ORDER BY dt_add DESC LIMIT " . $page_items . " OFFSET " . $offset;
+        $stmt = db_get_prepare_stmt($con, $sql, [$search]);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-
 
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
         if ($pages_count <= 0) {

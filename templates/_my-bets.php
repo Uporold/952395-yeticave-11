@@ -18,15 +18,11 @@
                                <?php endif; ?>">
                     <td class="rates__info">
                         <div class="rates__img">
-                            <a href="/lot.php?id=<?= $bet['lot_id']; ?>">
-                                <img src="/uploads/<?= $bet['path']; ?>"alt="">
-                            </a>
+                            <a href="/lot.php?id=<?= $bet['lot_id']; ?>"><img src="/uploads/<?= $bet['path']; ?>"
+                                                                              alt=""></a>
                         </div>
-                        <div>
-                            <h3 class="rates__title">
-                                <a href="/lot.php?id=<?= $bet['lot_id']; ?>"><?= esc($bet['lot_name']); ?>
-                                </a>
-                            </h3>
+                        <div><h3 class="rates__title"><a
+                                    href="/lot.php?id=<?= $bet['lot_id']; ?>"><?= esc($bet['lot_name']); ?></a></h3>
                             <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                                 <p><?= esc($bet['contacts']); ?></p>
                             <?php endif; ?>

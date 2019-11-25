@@ -56,7 +56,7 @@ $container;
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <?php if ($categories !== 0): ?>
+            <?php if ($categories != 0): ?>
                 <?php foreach ($categories as $category): ?>
                     <?= include_template('_categories-footer.php', ['category' => $category]); ?>
                 <?php endforeach; ?>
