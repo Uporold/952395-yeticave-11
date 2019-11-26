@@ -7,7 +7,7 @@ $search = $_GET['q'] ?? '';
 
 if ($search ==! '') {
     $cur_page = $_GET['page'] ?? 1;
-    $page_items = 1;
+    $page_items = 9;
     $result = mysqli_query($con, "SELECT COUNT(*) as cnt FROM lots "
         . "JOIN categories ON lots.cat_id  = categories.id "
         . "WHERE MATCH(lot_name, text) AGAINST( '". esc($search) ."') AND dt_end > NOW()");
