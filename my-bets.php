@@ -13,7 +13,7 @@ if (!isset($_SESSION['user'])) {
       . 'JOIN lots ON bets.lot_id = lots.id '
       . 'JOIN users ON bets.user_id = users.id '
       . 'JOIN categories ON lots.cat_id = categories.id '
-      . 'WHERE bets.user_id = ? AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY lot_id) '
+      . 'WHERE bets.user_id = ? AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY lot_id, user_id) '
       . 'ORDER BY bets.dt_add DESC ';
 
     $stmt = db_get_prepare_stmt($con, $sql, [$_SESSION['user']['id']]);

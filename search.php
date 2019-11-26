@@ -5,9 +5,9 @@ $container = 0;
 $lots = [];
 $search = $_GET['q'] ?? '';
 
-if ($search) {
+if ($search ==! '') {
     $cur_page = $_GET['page'] ?? 1;
-    $page_items = 9;
+    $page_items = 1;
     $result = mysqli_query($con, "SELECT COUNT(*) as cnt FROM lots "
         . "JOIN categories ON lots.cat_id  = categories.id "
         . "WHERE MATCH(lot_name, text) AGAINST( '". esc($search) ."') AND dt_end > NOW()");
@@ -31,7 +31,11 @@ if ($search) {
     } else {
         $page_content = include_template('_search.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link', 'val'));
     }
+}else {
+    $error = "Введите поисковой запрос";
+    $page_content = include_template('error.php', ['error' => $error]);
 }
+
 
     $layout_content = include_template('layout.php', [
         'content'    => $page_content,
