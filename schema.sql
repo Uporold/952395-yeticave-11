@@ -20,7 +20,7 @@ CREATE TABLE lots (
   text     VARCHAR(255),
   bet_step INT,
   autor_id INT NOT NULL,
-  winner_id INT DEFAULT 0
+  winner_id INT DEFAULT NULL
 );
 
 CREATE TABLE bets (
@@ -38,8 +38,6 @@ CREATE TABLE users (
   name     VARCHAR(64) NOT NULL,
   password VARCHAR(64) NOT NULL,
   contacts VARCHAR(128) NOT NULL,
-  lot_id   INT,
-  bet_id   INT
 );
 
 CREATE UNIQUE INDEX lot_name ON lots(lot_name);

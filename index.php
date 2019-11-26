@@ -1,16 +1,10 @@
 <?php
 require_once 'init.php';
 require_once 'functions.php';
+require_once 'getwinner.php';
 $container = 1;
 
 
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$result = mysqli_query($con, $sql);
-if ($result) {
-    $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-} else {
-    echo "Ошибка подключения: ". mysqli_connect_error();
-}
 $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
     . 'WHERE dt_end > NOW()'

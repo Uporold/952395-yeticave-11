@@ -4,12 +4,6 @@ require_once 'functions.php';
 $container = 0;
 $errors = null;
 
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$res = mysqli_query($con, $sql);
-if ($res) {
-    $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
-
 if (isset($_SESSION['user'])) {
     http_response_code(403);
     header("Location: /");

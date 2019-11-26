@@ -3,12 +3,6 @@ require_once 'init.php';
 require_once 'functions.php';
 $container = 0;
 
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$res = mysqli_query($con, $sql);
-if ($res) {
-    $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form = $_POST;
     $errors = [];

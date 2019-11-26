@@ -3,14 +3,6 @@ require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
 
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$result = mysqli_query($con, $sql);
-if ($result) {
-    $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-} else {
-    echo "Ошибка подключения: ". mysqli_connect_error();
-}
-
 if (!isset($_SESSION['user'])) {
     $error = "Данная страница доступна только зарегистрированным пользователям.";
     $page_content = include_template('error.php', ['error' => $error]);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Получает значение цены и возвращает отформатированное значение
  * с делением на разряды и добавлением знака рубля.
@@ -172,6 +173,21 @@ function validateNumber($value) {
         return "Значение должно быть больше нуля!";
     }
 }
+
+/**
+ * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
+ *
+ * Примеры использования:
+ * is_date_valid('2019-01-01'); // true
+ * is_date_valid('2016-02-29'); // true
+ * is_date_valid('2019-04-31'); // false
+ * is_date_valid('10.10.2010'); // false
+ * is_date_valid('10/10/2010'); // false
+ *
+ * @param string $date Дата в виде строки
+ *
+ * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
+ */
 function is_date_valid(string $date) : bool {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -183,10 +199,19 @@ function getPostVal($name) {
     return filter_input(INPUT_POST, $name);
 }
 
+/**
+ * Проверяет переданную дату с текущей, в зависимости от разницы вернет результат
+ *
+ * @param string $date Дата в виде строки
+ *
+ * @return null Дата удовлетворяет условию быть больше текущей даты минимум на 1 день
+ * @return string Дата не удовлетворяет условию быть больше текущей даты минимум на 1 день
+ * @return string Дата не удовлетворяет формату
+ */
 function dateCheck($date) {
     date_default_timezone_set("Europe/Moscow");
     setlocale(LC_ALL, 'ru_RU');
- if (is_date_valid($date) == 1) {
+ if (is_date_valid($date) === true) {
     $expDate = strtotime($date);
     $secs_to_expire = $expDate - time();
     if ($secs_to_expire >= 84000) {
@@ -221,4 +246,18 @@ function timeAgo($time)
     } else {
         return date('d.m.y в H:i', strtotime($time));
     }
+}
+/**
+ * Рассчитывает OFFSET, а затем добавляет к переданному запросу значения LIMIT и OFFSET
+ * и передаёт готовый запрос
+ *
+ * @param string $sql запром MySQL
+ * @param int $page_items количество для вывода строк из таблицы
+ * @param int текущая страница
+ * @return string готовый запрос с переданными в него LIMIT и OFFSET
+ */
+ function pagination($sql, $page_items, $cur_page) {
+    $offset = ($cur_page - 1) * $page_items;
+    $sql = $sql . ' LIMIT ' . $page_items . ' OFFSET ' . $offset;
+    return $sql;
 }

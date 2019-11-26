@@ -3,15 +3,8 @@ require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
 
-
-
 $cats_ids = [];
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$res = mysqli_query($con, $sql);
-if ($res) {
-    $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    $cats_ids = array_column($categories, 'id');
-}
+$cats_ids = array_column($categories, 'id');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $required = ['lot_name', 'cat_id', 'text', 'st_price', 'bet_step', 'dt_end'];
@@ -62,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $tmp_name);
-        if ($file_type !== "image/jpeg") {
-            $errors['file'] = 'Загрузите картинку в формате JPG';
+        if ($file_type !== "image/jpeg" && $file_type !== "image/png") {
+            $errors['file'] = 'Загрузите картинку в формате JPG или PNG';
         } else {
             move_uploaded_file($tmp_name, 'uploads/' . $filename);
             $lot['path'] = $filename;

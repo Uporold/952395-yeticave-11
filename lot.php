@@ -3,14 +3,6 @@ require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
 
-$sql = 'SELECT `id`, `cat_name`, `code` FROM categories';
-$result = mysqli_query($con, $sql);
-if ($result) {
-    $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-} else {
-    echo "Ошибка подключения: ". mysqli_connect_error();
-}
-
 if (isset($_GET['id'])) {
     $lot_id = $_GET['id'];
 }
@@ -66,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $stmt = db_get_prepare_stmt($con, $sql, [$_SESSION['user']['id'], $lots[0]['id'], $_POST['value']]);
         $res = mysqli_stmt_execute($stmt);
         if ($res) {
-            header("Location: /lot.php?id={$lots[0]['id']}");
+            header("Location: /lot.php?id={$lots[   0]['id']}");
         } else {
             $pageContent = include_template('_lot.php', ['error' => mysqli_error($con)]);
         }
