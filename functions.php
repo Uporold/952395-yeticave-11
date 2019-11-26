@@ -195,6 +195,13 @@ function is_date_valid(string $date) : bool {
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
 
+/**
+ * Функция-помощник для сохранения в форме введеных данных
+ *
+ * @param string $name Поле данных
+ *
+ * @return string введенные данные
+ */
 function getPostVal($name) {
     return filter_input(INPUT_POST, $name);
 }
