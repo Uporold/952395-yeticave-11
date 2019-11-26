@@ -80,7 +80,7 @@ if (isset($_SESSION['user'])) {
     } else {
         $page_content = include_template('_add.php', ['categories' => $categories]);
     }
-}else {
+} else {
     $error = "Публикация лотов доступна только зарегистрированным пользователям, Вы будете перенаправлены на главную страницу через 3 секунды.";
     $page_content = include_template('error.php', ['error' => $error]);
     header('Refresh: 3; url="/"');

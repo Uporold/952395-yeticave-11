@@ -6,12 +6,13 @@
  * @param int $price Цена для форматирования
  * @return int Отформатированное значение цены
  */
-function priceFormatting ($price) {
+function priceFormatting($price)
+{
     $ceilPrice = ceil($price);
 
     if ($ceilPrice < 1000) {
         return $ceilPrice . " ₽";
-    } else if ($ceilPrice >= 1000) {
+    } elseif ($ceilPrice >= 1000) {
         $formattedPrice = number_format($ceilPrice, 0, $dec_point = "", $thousands_sep = " ");
     }
     return $formattedPrice . " ₽";
@@ -23,7 +24,8 @@ function priceFormatting ($price) {
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, $data) {
+function include_template($name, $data)
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -45,9 +47,10 @@ function include_template($name, $data) {
  * @param string $str Строка для преобразования
  * @return string Итоговый преобразованный текст
  */
-function esc($str) {
-	$text = htmlspecialchars($str);
-	return $text;
+function esc($str)
+{
+    $text = htmlspecialchars($str);
+    return $text;
 };
 
 /**
@@ -55,7 +58,8 @@ function esc($str) {
  * @param date $date Получаемая дата
  * @return array $expInfo Итоговый массив
  */
-function timeExp(string $date) {
+function timeExp(string $date)
+{
     date_default_timezone_set("Europe/Moscow");
     setlocale(LC_ALL, 'ru_RU');
 
@@ -77,7 +81,8 @@ function timeExp(string $date) {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -94,11 +99,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
 
@@ -129,7 +132,8 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  * @return string Возвращает строку с предупреждением при отсутствии совпадений
  * @return null Найдено соответствие
  */
-function validateCategory($id, $allowed_list) {
+function validateCategory($id, $allowed_list)
+{
     if (!in_array($id, $allowed_list)) {
         return "Указана несуществующая категория";
     }
@@ -144,7 +148,8 @@ function validateCategory($id, $allowed_list) {
  * @return string Возвращает строку с предупреждением при несоотсветсвии $min или $max
  * @return null Несоответствие не найдено
  */
-function validateLength($value, $min, $max) {
+function validateLength($value, $min, $max)
+{
     if ($value) {
         $len = strlen($value);
         if ($len < $min or $len > $max) {
@@ -161,15 +166,14 @@ function validateLength($value, $min, $max) {
  * @return string Возвращает строку с предупреждением при $value < 0
  * @return null Возвращает при $value > 0
  */
-function validateNumber($value) {
+function validateNumber($value)
+{
     if ($value > 0) {
-        if(!filter_var($value, FILTER_VALIDATE_INT)){
+        if (!filter_var($value, FILTER_VALIDATE_INT)) {
             return "Значение должно быть целым числом!";
-
         }
         return null;
-    }
-    else {
+    } else {
         return "Значение должно быть больше нуля!";
     }
 }
@@ -188,7 +192,8 @@ function validateNumber($value) {
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date) : bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
@@ -202,7 +207,8 @@ function is_date_valid(string $date) : bool {
  *
  * @return string введенные данные
  */
-function getPostVal($name) {
+function getPostVal($name)
+{
     return filter_input(INPUT_POST, $name);
 }
 
@@ -215,22 +221,21 @@ function getPostVal($name) {
  * @return string Дата не удовлетворяет условию быть больше текущей даты минимум на 1 день
  * @return string Дата не удовлетворяет формату
  */
-function dateCheck($date) {
+function dateCheck($date)
+{
     date_default_timezone_set("Europe/Moscow");
     setlocale(LC_ALL, 'ru_RU');
- if (is_date_valid($date) === true) {
-    $expDate = strtotime($date);
-    $secs_to_expire = $expDate - time();
-    if ($secs_to_expire >= 84000) {
-        return null;
+    if (is_date_valid($date) === true) {
+        $expDate = strtotime($date);
+        $secs_to_expire = $expDate - time();
+        if ($secs_to_expire >= 84000) {
+            return null;
+        } else {
+            return "Дата окончания торгов не может быть менее суток!";
+        }
+    } else {
+        return "Неверный формат даты";
     }
-    else {
-        return "Дата окончания торгов не может быть менее суток!";
-    }
- }
- else {
-     return "Неверный формат даты";
- }
 }
 /**
  * Определяет сколько прошло времени с указанной даты
@@ -263,8 +268,9 @@ function timeAgo($time)
  * @param int текущая страница
  * @return string готовый запрос с переданными в него LIMIT и OFFSET
  */
- function pagination($sql, $page_items, $cur_page) {
-    $offset = ($cur_page - 1) * $page_items;
-    $sql = $sql . ' LIMIT ' . $page_items . ' OFFSET ' . $offset;
-    return $sql;
-}
+ function pagination($sql, $page_items, $cur_page)
+ {
+     $offset = ($cur_page - 1) * $page_items;
+     $sql = $sql . ' LIMIT ' . $page_items . ' OFFSET ' . $offset;
+     return $sql;
+ }

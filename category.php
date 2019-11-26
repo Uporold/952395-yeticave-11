@@ -17,7 +17,6 @@ if ($tab == $_GET['tab']) {
     $pages_count = ceil($items_count / $page_items);
     $pages = range(1, $pages_count);
 
-
     $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
     . 'JOIN categories ON categories.id = lots.cat_id '
     . 'WHERE categories.code ="' . $sort_field . '" AND dt_end > NOW()'

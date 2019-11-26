@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (count($errors)) {
         $page_content = include_template('_login.php', compact('form', 'errors', 'categories'));
-
     } else {
         header("Location: /index.php");
         exit();

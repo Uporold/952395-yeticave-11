@@ -31,7 +31,7 @@ if ($search ==! '') {
     } else {
         $page_content = include_template('_search.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link', 'val'));
     }
-}else {
+} else {
     $error = "Введите поисковой запрос";
     $page_content = include_template('error.php', ['error' => $error]);
 }
