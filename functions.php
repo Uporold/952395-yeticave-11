@@ -3,7 +3,9 @@
 /**
  * Получает значение цены и возвращает отформатированное значение
  * с делением на разряды и добавлением знака рубля.
+ *
  * @param int $price Цена для форматирования
+ *
  * @return int Отформатированное значение цены
  */
 function priceFormatting($price)
@@ -11,22 +13,26 @@ function priceFormatting($price)
     $ceilPrice = ceil($price);
 
     if ($ceilPrice < 1000) {
-        return $ceilPrice . " ₽";
+        return $ceilPrice." ₽";
     } elseif ($ceilPrice >= 1000) {
-        $formattedPrice = number_format($ceilPrice, 0, $dec_point = "", $thousands_sep = " ");
+        $formattedPrice = number_format($ceilPrice, 0, $dec_point = "",
+            $thousands_sep = " ");
     }
-    return $formattedPrice . " ₽";
+
+    return $formattedPrice." ₽";
 }
 
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ *
  * @param string $name Путь к файлу шаблона относительно папки templates
- * @param array $data Ассоциативный массив с данными для шаблона
+ * @param array  $data Ассоциативный массив с данными для шаблона
+ *
  * @return string Итоговый HTML
  */
 function include_template($name, $data)
 {
-    $name = 'templates/' . $name;
+    $name = 'templates/'.$name;
     $result = '';
 
     if (!file_exists($name)) {
@@ -44,18 +50,25 @@ function include_template($name, $data)
 
 /**
  * Получает строку, преобразует специальные символы в HTML сущности
+ *
  * @param string $str Строка для преобразования
+ *
  * @return string Итоговый преобразованный текст
  */
 function esc($str)
 {
     $text = htmlspecialchars($str);
+
     return $text;
-};
+}
+
+;
 
 /**
  * Получает дату в формате ГГГГ-ММ-ДД, возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах;
+ *
  * @param date $date Получаемая дата
+ *
  * @return array $expInfo Итоговый массив
  */
 function timeExp(string $date)
@@ -65,8 +78,10 @@ function timeExp(string $date)
 
     $expDate = strtotime($date);
     $secs_to_expire = $expDate - time();
-    $hours_to_expire = str_pad(floor($secs_to_expire / 3600), 2, "0", STR_PAD_LEFT);
-    $minutes_to_expire = str_pad(floor(($secs_to_expire % 3600) / 60), 2, "0", STR_PAD_LEFT);
+    $hours_to_expire = str_pad(floor($secs_to_expire / 3600), 2, "0",
+        STR_PAD_LEFT);
+    $minutes_to_expire = str_pad(floor(($secs_to_expire % 3600) / 60), 2, "0",
+        STR_PAD_LEFT);
     $expInfo = ['часы' => $hours_to_expire, 'минуты' => $minutes_to_expire];
 
     return $expInfo;
@@ -75,8 +90,8 @@ function timeExp(string $date)
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
- * @param $link mysqli Ресурс соединения
- * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param       $link mysqli Ресурс соединения
+ * @param       $sql  string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
  *
  * @return mysqli_stmt Подготовленное выражение
@@ -86,7 +101,8 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
-        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
+        $errorMsg = 'Не удалось инициализировать подготовленное выражение: '
+            .mysqli_error($link);
         die($errorMsg);
     }
 
@@ -117,7 +133,9 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $func(...$values);
 
         if (mysqli_errno($link) > 0) {
-            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
+            $errorMsg
+                = 'Не удалось связать подготовленное выражение с параметрами: '
+                .mysqli_error($link);
             die($errorMsg);
         }
     }
@@ -127,55 +145,54 @@ function db_get_prepare_stmt($link, $sql, $data = [])
 
 /**
  * Получает значение для сравнения и массив, ищет данное значение в массиве
- * @param int $id Получаемое значение
+ *
+ * @param int   $id           Получаемое значение
  * @param array $allowed_list Массив-список для сравнения
- * @return string Возвращает строку с предупреждением при отсутствии совпадений
- * @return null Найдено соответствие
+ *
+ * @return bool false Возвращает при отсутствии совпадений
+ * @return bool true Возвращает при найденном соответствии
  */
 function validateCategory($id, $allowed_list)
 {
     if (!in_array($id, $allowed_list)) {
-        return "Указана несуществующая категория";
+        return false;
     }
 
-    return null;
+    return true;
 }
+
 /**
  * Получает значение для сравнения и его допустимые минимальное и максимальное значения
+ *
  * @param int $value Получаемое значение
- * @param int $min Минимальное допустимое значение
- * @param int $max Максимальное допустимое значение
- * @return string Возвращает строку с предупреждением при несоотсветсвии $min или $max
- * @return null Несоответствие не найдено
+ * @param int $min   Минимальное допустимое значение
+ * @param int $max   Максимальное допустимое значение
+ *
+ * @return bool true Возвращает при несоответсвии одному из допустимых значений
  */
-function validateLength($value, $min, $max)
+function validateLength($value, int $min, int $max)
 {
-    if ($value) {
-        $len = strlen($value);
-        if ($len < $min or $len > $max) {
-            return "Значение должно быть от $min до $max символов";
-        }
-    }
-
-    return null;
+    return (strlen($value) < $min || strlen($value) > $max);
 }
 
 /**
- * Получает значение для сравнения и сравнивает его с нулём
+ * Получает значение для сравнения и проверяет, положительное и целое ли оно
+ *
  * @param int $value Получаемое значение
- * @return string Возвращает строку с предупреждением при $value < 0
- * @return null Возвращает при $value > 0
+ *
+ * @return bool false Число не прошло проверку на целочисленность и положительность
+ * @return bool true Проверка пройдена успешно
  */
+
 function validateNumber($value)
 {
-    if ($value > 0) {
-        if (!filter_var($value, FILTER_VALIDATE_INT)) {
-            return "Значение должно быть целым числом!";
-        }
-        return null;
-    } else {
-        return "Значение должно быть больше нуля!";
+    if (!filter_var($value, FILTER_VALIDATE_INT,
+        array("options" => array("min_range" => 1)))
+    ) {
+        return false;
     }
+
+    return true;
 }
 
 /**
@@ -192,7 +209,7 @@ function validateNumber($value)
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool
+function is_date_valid(string $date): bool
 {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -205,7 +222,7 @@ function is_date_valid(string $date) : bool
  *
  * @param string $name Поле данных
  *
- * @return string введенные данные
+ * @return string Введенные данные
  */
 function getPostVal($name)
 {
@@ -217,31 +234,28 @@ function getPostVal($name)
  *
  * @param string $date Дата в виде строки
  *
- * @return null Дата удовлетворяет условию быть больше текущей даты минимум на 1 день
- * @return string Дата не удовлетворяет условию быть больше текущей даты минимум на 1 день
- * @return string Дата не удовлетворяет формату
+ * @return bool true Дата удовлетворяет условию быть больше текущей даты минимум на 1 день
+ * @return bool false Дата не удовлетворяет условию быть больше текущей даты минимум на 1 день
  */
+
 function dateCheck($date)
 {
     date_default_timezone_set("Europe/Moscow");
     setlocale(LC_ALL, 'ru_RU');
-    if (is_date_valid($date) === true) {
-        $expDate = strtotime($date);
-        $secs_to_expire = $expDate - time();
-        if ($secs_to_expire >= 84000) {
-            return null;
-        } else {
-            return "Дата окончания торгов не может быть менее суток!";
-        }
-    } else {
-        return "Неверный формат даты";
+    $expDate = strtotime($date);
+    if ($expDate > time()) {
+        return true;
     }
+
+    return false;
 }
+
 /**
  * Определяет сколько прошло времени с указанной даты
  *
- * @param string $time дата
- * @return string прошедшее время с указанной даты в формате в соответсвтии с условием
+ * @param string $time Дата
+ *
+ * @return string Прошедшее время с указанной даты в формате в соответсвтии с условием
  */
 function timeAgo($time)
 {
@@ -259,18 +273,62 @@ function timeAgo($time)
         return date('d.m.y в H:i', strtotime($time));
     }
 }
+
 /**
  * Рассчитывает OFFSET, а затем добавляет к переданному запросу значения LIMIT и OFFSET
  * и передаёт готовый запрос
  *
- * @param string $sql запром MySQL
- * @param int $page_items количество для вывода строк из таблицы
- * @param int текущая страница
- * @return string готовый запрос с переданными в него LIMIT и OFFSET
+ * @param string $sql        Запроc MySQL
+ * @param int    $page_items Количество для вывода строк из таблицы
+ * @param int    $cur_page   Текущая страница
+ *
+ * @return string Готовый запрос с переданными в него LIMIT и OFFSET
  */
- function pagination($sql, $page_items, $cur_page)
- {
-     $offset = ($cur_page - 1) * $page_items;
-     $sql = $sql . ' LIMIT ' . $page_items . ' OFFSET ' . $offset;
-     return $sql;
- }
+function pagination($sql, $page_items, $cur_page)
+{
+    $offset = ($cur_page - 1) * $page_items;
+    $sql = $sql.' LIMIT '.$page_items.' OFFSET '.$offset;
+
+    return $sql;
+}
+
+/**
+ * Проверяет существование идентификатора лота
+ *
+ * @param     $link   mysqli Ресурс соединения
+ * @param int $lot_id идентификатор лота для проверки
+ *
+ * @return bool true Идентификатор найден
+ * @return bool false Идентификатор не найден
+ */
+function getLotByID($link, $lot_id)
+{
+    if ($result = mysqli_query($link,
+        'SELECT * FROM lots WHERE id ='.$lot_id)
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Ищет пустые поля, которые нужно валидировать и
+ * присваивает соответствующему ключу значение в массиве,
+ * после возвращает массив ошибок
+ *
+ * @param array $requiredFields Поля для валидации
+ * @param array $errors         Массив ошибок
+ *
+ * @return array $errors Массив ошибок с незаполненными полями
+ */
+function emptyFieldErrors($requiredFields, $errors)
+{
+    foreach ($requiredFields as $key => $name) {
+        if (isset($key) && empty($_POST[$key])) {
+            $errors[$key] = "Поле $name надо заполнить";
+        }
+    }
+
+    return $errors;
+}

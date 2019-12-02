@@ -4,47 +4,46 @@ CREATE DATABASE yeticave
   USE yeticave;
 
 CREATE TABLE categories (
-  id       INT AUTO_INCREMENT PRIMARY KEY,
-  cat_name VARCHAR(64) NOT NULL,
-  code     VARCHAR(64) NOT NULL
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  categoryName VARCHAR(64) NOT NULL,
+  code         VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE lots (
-  id       INT AUTO_INCREMENT PRIMARY KEY,
-  lot_name VARCHAR(64) NOT NULL,
-  cat_id   VARCHAR(64) NOT NULL,
-  st_price INT NOT NULL,
-  path     VARCHAR(128) UNIQUE,
-  dt_add   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  dt_end   TIMESTAMP NOT NULL,
-  text     VARCHAR(255),
-  bet_step INT,
-  autor_id INT NOT NULL,
-  winner_id INT DEFAULT NULL
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  lot_name    VARCHAR(64) NOT NULL UNIQUE,
+  categoryId  VARCHAR(64) NOT NULL,
+  st_price    INT NOT NULL,
+  path        VARCHAR(128) UNIQUE,
+  dt_add      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  dt_end      TIMESTAMP NOT NULL,
+  text        TEXT NOT NULL,
+  bet_step    INT NOT NULL,
+  autor_id    INT NOT NULL,
+  winner_id   INT DEFAULT NULL,
+  FOREIGN KEY (categoryId) REFERENCES categories(id),
+  FOREIGN KEY (autor_id) REFERENCES users(id),
+  FOREIGN KEY (winner_id) REFERENCES users(id)
 );
 
 CREATE TABLE bets (
-  id       INT AUTO_INCREMENT PRIMARY KEY,
-  dt_add   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  value    INT NOT NULL,
-  user_id  INT NOT NULL,
-  lot_id   INT NOT NULL
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  dt_add      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  value       INT NOT NULL,
+  user_id     INT NOT NULL,
+  lot_id      INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (lot_id) REFERENCES lots(id)
 );
 
 CREATE TABLE users (
-  id       INT AUTO_INCREMENT PRIMARY KEY,
-  dt_reg   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  email    VARCHAR(128) NOT NULL,
-  name     VARCHAR(64) NOT NULL,
-  password VARCHAR(64) NOT NULL,
-  contacts VARCHAR(128) NOT NULL,
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  dt_reg      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  email       VARCHAR(128) NOT NULL UNIQUE,
+  name        VARCHAR(64) NOT NULL,
+  password    VARCHAR(64) NOT NULL,
+  contacts    VARCHAR(128) NOT NULL
 );
 
-CREATE UNIQUE INDEX lot_name ON lots(lot_name);
-CREATE UNIQUE INDEX email ON users(email);
-CREATE INDEX name ON users(name);
-CREATE INDEX cat_name ON categories(cat_name);
-CREATE INDEX value ON bets(value);
-CREATE INDEX start_price ON lots(st_price);
 CREATE FULLTEXT INDEX lot_ft_search
 ON lots(lot_name, text);

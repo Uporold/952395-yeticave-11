@@ -34,10 +34,12 @@
                   placeholder="Напишите как с вами связаться"><?= getPostVal('contacts'); ?></textarea>
         <span class="form__error">Напишите как с вами связаться</span>
     </div>
+    <?php if (isset($errors)): ?>
     <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.
-          <?php foreach ($errors as $val): ?>
-              <li><strong><?= $val; ?></strong></li>
+          <?php foreach ($errors as $key => $error): ?>
+              <li><strong><?= $error ?? null; ?></strong></li>
           <?php endforeach; ?></span>
+          <?php endif;?>
     <button type="submit" class="button">Зарегистрироваться</button>
-    <a class="text-link" href="#">Уже есть аккаунт</a>
+    <a class="text-link" href="/login.php">Уже есть аккаунт</a>
 </form>

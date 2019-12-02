@@ -2,37 +2,57 @@
 require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
+$lots = [];
 
 $tab = filter_input(INPUT_GET, 'tab');
-if ($tab == $_GET['tab']) {
-    $sort_field = $_GET['tab'];
+if (isset($tab)) {
+    $sort_field = $tab;
 }
-    $cur_page = $_GET['page'] ?? 1;
-    $page_items = 9;
-    $result = mysqli_query($con, 'SELECT COUNT(*) as cnt FROM lots '
-    . 'JOIN categories ON categories.id = lots.cat_id '
-    . 'WHERE categories.code ="' . $sort_field . '" AND dt_end > NOW()'
-    . 'ORDER BY dt_add DESC LIMIT 9');
-    $items_count = mysqli_fetch_assoc($result)['cnt'];
-    $pages_count = ceil($items_count / $page_items);
-    $pages = range(1, $pages_count);
+$current_page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?? 1;
+$page_items = 9;
+$sql = 'SELECT COUNT(*) as count FROM lots '
+    .'JOIN categories ON categories.id = lots.categoryId '
+    .'WHERE categories.code = (?) AND dt_end > NOW()'
+    .'ORDER BY dt_add DESC LIMIT 9';
+$stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$items_count = mysqli_fetch_assoc($result)['count'];
+$pages_count = ceil($items_count / $page_items);
+$pages = range(1, $pages_count);
 
-    $sql = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.cat_name  FROM lots '
-    . 'JOIN categories ON categories.id = lots.cat_id '
-    . 'WHERE categories.code ="' . $sort_field . '" AND dt_end > NOW()'
-    . 'ORDER BY dt_add DESC ';
-    if ($res = mysqli_query($con, pagination($sql, $page_items, $cur_page))) {
-        $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
-        $page_content = include_template('_category.php', compact('lots', 'categories', 'pages', 'pages_count', 'cur_page', 'link', 'val'));
-    } else {
-        $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
-    }
+$sql = 'SELECT categoryName FROM categories '
+    .' WHERE code = (?) ';
+$stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$categoryName = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+$sql
+    = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.categoryName  FROM lots '
+    .'JOIN categories ON categories.id = lots.categoryId '
+    .'WHERE categories.code =(?) AND dt_end > NOW()'
+    .'ORDER BY dt_add DESC ';
+$stmt = db_get_prepare_stmt($link, pagination($sql, $page_items, $current_page),
+    [$sort_field]);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if ($result) {
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $page_content = include_template('_category.php',
+        compact('lots', 'categories', 'pages', 'pages_count', 'current_page',
+            'categoryName'));
+} else {
+    $error = "Что-то пошло не так, попробуйте позднее";
+    $page_content = include_template('error.php', ['error' => $error]);
+    http_response_code(404);
+}
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'categories' => $categories,
     'container' => $container,
-    'title' => 'YetiCave - ' . esc($lots[0]['cat_name'])
+    'title' => 'YetiCave - '.esc($categoryName[0]['categoryName']),
 ]);
-
 echo $layout_content;

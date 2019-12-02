@@ -1,6 +1,4 @@
 <?php
-$is_auth;
-$user_name;
 $container;
 ?>
 
@@ -37,10 +35,10 @@ $container;
                 <?php else: ?>
                     <ul class="user-menu__list">
                         <li class="user-menu__item">
-                            <a href="reg.php">Регистрация</a>
+                            <a href="/reg.php">Регистрация</a>
                         </li>
                         <li class="user-menu__item">
-                            <a href="login.php">Вход</a>
+                            <a href="/login.php">Вход</a>
                         </li>
                     </ul>
                 <?php endif; ?>

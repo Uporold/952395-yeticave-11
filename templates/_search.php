@@ -1,6 +1,6 @@
 <?php
 $link = '/search.php?q';
-$val = 'q';
+$value = 'q';
 ?>
 <nav class="nav">
     <ul class="nav__list container">
@@ -11,7 +11,7 @@ $val = 'q';
 </nav>
 <div class="container">
     <section class="lots">
-        <h2>Результаты поиска по запросу «<span><?= $_GET['q']; ?></span>»</h2>
+        <h2>Результаты поиска по запросу «<span><?= esc($_GET['q']); ?></span>»</h2>
         <ul class="lots__list">
             <?php foreach ($lots as $lot): ?>
                 <?= include_template('_lots.php', ['lot' => $lot]); ?>
@@ -21,7 +21,7 @@ $val = 'q';
     <?= include_template('_pagination.php', [
         'pages' => $pages,
         'pages_count' => $pages_count,
-        'cur_page' => $cur_page,
+        'current_page' => $current_page,
         'link' => $link,
-        'val' => $val
+        'value' => $value
     ]); ?>

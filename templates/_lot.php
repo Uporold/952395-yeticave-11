@@ -7,14 +7,14 @@
 </nav>
 <?php foreach ($lots as $lot): ?>
     <section class="lot-item container">
-        <h2><?= $lot['lot_name']; ?></h2>
+        <h2><?= esc($lot['lot_name']); ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
                 <div class="lot-item__image">
                     <img src="../uploads/<?= esc($lot['path']); ?>" width="730" height="548"
-                         alt="<?= $lot['lot_name']; ?>">
+                         alt="<?= esc($lot['lot_name']); ?>">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= esc($lot['cat_name']); ?></span></p>
+                <p class="lot-item__category">Категория: <span><?= esc($lot['categoryName']); ?></span></p>
                 <p class="lot-item__description"><?= esc($lot['text']); ?></p>
             </div>
             <div class="lot-item__right">
@@ -48,23 +48,22 @@
                                 <input id="value" type="text" name="value"
                                        placeholder="<?= ($lot['current_price'] ?? $lot['st_price']) + $lot['bet_step']; ?>"
                                        value="<?= getPostVal('value'); ?>">
-                                <span class="form__error"><?= $error; ?></span>
+                                <span class="form__error"><?= $error ?? null; ?></span>
                             </p>
                             <button type="submit" class="button">Сделать ставку</button>
                         </form>
                         </div>
-                        <?php if ($betsCount[0]['cnt'] > 0): ?>
+                        <?php if ($betsCount[0]['count'] > 0): ?>
                             <div class="history">
-                                <h3>История ставок (<span><?= $betsCount[0]['cnt']; ?></span>)</h3>
+                                <h3>История ставок (<span><?= $betsCount[0]['count']; ?></span>)</h3>
                                 <table class="history__list">
                                     <?php foreach ($bets as $bet): ?>
                                         <tr class="history__item">
-                                            <td class="history__name"><?= $bet['name']; ?></td>
+                                            <td class="history__name"><?= esc($bet['name']); ?></td>
                                             <td class="history__price"><?= priceFormatting($bet['value']); ?></td>
                                             <td class="history__time"><?= timeAgo($bet['dt_add']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
-
                                 </table>
                             </div>
                         <?php endif; ?>

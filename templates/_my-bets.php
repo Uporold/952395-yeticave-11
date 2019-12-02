@@ -13,13 +13,13 @@
             <?php foreach ($bets as $bet): ?>
                 <tr class="rates__item <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                                <?= 'rates__item--win'; ?>
-                               <?php elseif (($bet['winner_id'] > 0) && (time() > strtotime($bet['dt_end']))): ?>
+                               <?php elseif ((($bet['winner_id'] ==! (int)$_SESSION['user']['id'])) && (time() > strtotime($bet['dt_end']))): ?>
                                <?= 'rates__item--end'; ?>
                                <?php endif; ?>">
                     <td class="rates__info">
                         <div class="rates__img">
-                            <a href="/lot.php?id=<?= $bet['lot_id']; ?>">
-                                <img src="/uploads/<?= $bet['path']; ?>"alt="">
+                            <a href="/lot.php?id=<?= esc($bet['lot_id']); ?>">
+                                <img src="/uploads/<?= esc($bet['path']); ?>"alt="">
                             </a>
                         </div>
                         <div>
@@ -33,12 +33,12 @@
                         </div>
                     </td>
                     <td class="rates__category">
-                        <?= $bet['cat_name']; ?>
+                        <?= $bet['categoryName']; ?>
                     </td>
                     <td class="rates__timer">
                         <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                             <div class="timer timer--win">Ставка выиграла</div>
-                        <?php elseif (($bet['winner_id'] > 0) && (time() > strtotime($bet['dt_end']))): ?>
+                        <?php elseif (($bet['winner_id'] ==! (int)$_SESSION['user']['id']) && (time() > strtotime($bet['dt_end']))): ?>
                             <div class="timer timer--end">Торги окончены</div>
                         <?php else: ?>
                             <div class="timer <?php if (timeExp($bet['dt_end'])) echo 'timer--finishing'; ?>">

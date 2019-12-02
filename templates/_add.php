@@ -17,14 +17,14 @@
                    value="<?= getPostVal('lot_name'); ?>">
             <span class="form__error">Введите наименование лота</span>
         </div>
-        <?php $classname = isset($errors['cat_id']) ? "form__item--invalid" : ""; ?>
+        <?php $classname = isset($errors['categoryId']) ? "form__item--invalid" : ""; ?>
         <div class="form__item <?= $classname; ?>">
             <label for="category">Категория <sup>*</sup></label>
-            <select name="cat_id" id="category">
+            <select name="categoryId" id="category">
                 <option>Выберите категорию</option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?= $category['id'] ?>"
-                            <?php if ($category['id'] === getPostVal('cat_id')): ?>selected<?php endif; ?>><?= $category['cat_name']; ?>
+                            <?php if ($category['id'] === getPostVal('categoryId')): ?>selected<?php endif; ?>><?= $category['categoryName']; ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -51,7 +51,7 @@
         <div class="form__item form__item--small <?= $classname; ?>">
             <label for="st_price">Начальная цена <sup>*</sup></label>
             <input id="st_price" type="text" name="st_price" placeholder="0" value="<?= getPostVal('st_price'); ?>">
-            <span class="form__error"><?= validateNumber($lot['st_price']); ?></span>
+            <span class="form__error">Введите начальную цену</span>
         </div>
         <?php $classname = isset($errors['bet_step']) ? "form__item--invalid" : ""; ?>
         <div class="form__item form__item--small <?= $classname; ?>">
@@ -62,7 +62,7 @@
         <?php $classname = isset($errors['dt_end']) ? "form__item--invalid" : ""; ?>
         <div class="form__item <?= $classname; ?>">
             <label for="dt_end">Дата окончания торгов <sup>*</sup></label>
-            <input class="form__input-date" id="dt_end" type="text" name="dt_end"
+            <input class="form__input-date" id="dt_end" type="date" name="dt_end"
                    placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= getPostVal('dt_end'); ?>">
             <span class="form__error">Введите дату завершения торгов</span>
         </div>

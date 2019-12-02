@@ -1,33 +1,38 @@
 <?php
 $link = '/category.php?tab';
-$val = 'tab';
+$value = 'tab';
 ?>
 <nav class="nav">
     <ul class="nav__list container">
         <?php foreach ($categories as $category): ?>
             <li class="nav__item <?php if ($category['code'] === $_GET['tab']): ?>nav__item--current<?php endif; ?>">
-                <a href="/category.php?tab=<?= $category['code'] ?>"><?= $category['cat_name']; ?></a>
+                <a href="/category.php?tab=<?= $category['code'] ?>"><?= $category['categoryName']; ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
 </nav>
 <div class="container">
     <section class="lots">
-        <?php foreach ($lots as $lot): ?>
-            <h2>Все лоты в категории <span><?= $lot['cat_name']; ?></span></h2>
-        <?php endforeach; ?>
+            <h2>Все лоты в категории <span><?= $categoryName[0]['categoryName']; ?></span></h2>
+            <?php if(!empty($lots)): ?>
         <ul class="lots__list">
             <?php foreach ($lots as $lot): ?>
                 <?= include_template('_lots.php', ['lot' => $lot]); ?>
             <?php endforeach; ?>
         </ul>
+            <?php else:?>
+
+
+    <p>Активных лотов в категории <?= $categoryName[0]['categoryName']; ?> не найдено</p>
+    <?php endif?>
+
     </section>
     <?= include_template('_pagination.php', [
         'pages' => $pages,
         'pages_count' => $pages_count,
-        'cur_page' => $cur_page,
+        'current_page' => $current_page,
         'link' => $link,
-        'val' => $val
+        'value' => $value
     ]); ?>
 
 </div>

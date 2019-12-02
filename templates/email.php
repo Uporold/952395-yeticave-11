@@ -3,7 +3,7 @@
 <body>
 
 <h1>Поздравляем с победой</h1>
-<p>Здравствуйте, <?= $data['user_name']; ?></p>
+<p>Здравствуйте, <?= esc($data['user_name']); ?></p>
 <p>Ваша ставка для лота <a
         href="http://952395-yeticave-11/lot.php?id=<?= esc($data['id']); ?>"><?= esc($data['lot_name']); ?></a>
     победила.</p>
