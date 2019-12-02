@@ -9,10 +9,19 @@ CREATE TABLE categories (
   code         VARCHAR(64) NOT NULL
 );
 
+CREATE TABLE users (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  dt_reg      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  email       VARCHAR(128) NOT NULL UNIQUE,
+  name        VARCHAR(64) NOT NULL,
+  password    VARCHAR(64) NOT NULL,
+  contacts    VARCHAR(128) NOT NULL
+);
+
 CREATE TABLE lots (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   lot_name    VARCHAR(64) NOT NULL UNIQUE,
-  categoryId  VARCHAR(64) NOT NULL,
+  categoryId  INT NOT NULL,
   st_price    INT NOT NULL,
   path        VARCHAR(128) UNIQUE,
   dt_add      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -34,15 +43,6 @@ CREATE TABLE bets (
   lot_id      INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (lot_id) REFERENCES lots(id)
-);
-
-CREATE TABLE users (
-  id          INT AUTO_INCREMENT PRIMARY KEY,
-  dt_reg      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  email       VARCHAR(128) NOT NULL UNIQUE,
-  name        VARCHAR(64) NOT NULL,
-  password    VARCHAR(64) NOT NULL,
-  contacts    VARCHAR(128) NOT NULL
 );
 
 CREATE FULLTEXT INDEX lot_ft_search
