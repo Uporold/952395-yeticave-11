@@ -269,9 +269,10 @@ function timeAgo($time)
         return "$minutes мин. назад";
     } elseif ($days == 0 && $hours < 24) {
         return "$hours час. назад";
-    } else {
-        return date('d.m.y в H:i', strtotime($time));
     }
+
+    return date('d.m.y в H:i', strtotime($time));
+
 }
 
 /**
