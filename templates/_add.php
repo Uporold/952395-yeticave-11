@@ -62,7 +62,7 @@
         <?php $classname = isset($errors['dt_end']) ? "form__item--invalid" : ""; ?>
         <div class="form__item <?= $classname; ?>">
             <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
-            <input class="form__input-date" id="lot-date" type="text" name="dt_end"
+            <input class="form__input-date" id="lot-date" type="date" name="dt_end"
                    placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= getPostVal('dt_end'); ?>">
             <span class="form__error">Введите дату завершения торгов</span>
         </div>
