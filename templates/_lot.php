@@ -38,7 +38,7 @@
                             <span><?= priceFormatting(($lot['current_price'] ?? $lot['st_price']) + $lot['bet_step']); ?></span>
                         </div>
                     </div>
-                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['id'] !== $lot['autor_id'] && ((int)$lot['winner_id'] === 0) && (time() < strtotime($lot['dt_end'])) && ($_SESSION['user']['id'] !== $bets[0]['user_id'])): ?>
+                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['id'] !== $lot['autor_id'] && ((int)$lot['winner_id'] === 0) && (time() < strtotime($lot['dt_end'])) && (($bets[0]['user_id'] ?? 0) !== $_SESSION['user']['id'])): ?>
                         <form class="lot-item__form" action="lot.php?id=<?= (int)$lot['id']; ?> " method="post"
                               autocomplete="off" enctype="multipart/form-data">
                             <?php $classname = isset($error) ? "form__item--invalid" : ""; ?>

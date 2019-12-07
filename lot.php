@@ -9,6 +9,7 @@ $error = null;
 if (isset($_GET['id'])) {
     $lot_id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
 }
+
 $lotId = mysqli_real_escape_string($link, $lot_id);
 $lots = mysqli_fetch_all(getLot($link, $lotId), MYSQLI_ASSOC);
 $bets = mysqli_fetch_all(getLotBets($link, $lotId), MYSQLI_ASSOC);
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $error = "Нельзя делать ставку на свой лот!";
         } elseif (strtotime($lots[0]['dt_end']) < time()) {
             $error = "Нельзя делать ставку на проданный лот!";
-        } elseif ($_SESSION['user']['id'] === $bets[0]['user_id']) {
+        } elseif (($bets[0]['user_id'] ?? 0) === $_SESSION['user']['id']) {
             $error = "Вашу ставку еще не перебили!";
         }
         if (isset($error)) {
