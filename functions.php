@@ -471,11 +471,11 @@ function getLotsByCategoryCode($link, $sort_field, $page_items, $current_page)
 function getUserBets($link, $user)
 {
     $sql
-        = "SELECT bets.dt_add, bets.value, lots.id AS lot_id, lots.lot_name, lots.path, lots.dt_end, lots.winner_id, categories.categoryName, (SELECT users.contacts FROM users JOIN lots ON lots.autor_id = users.id WHERE lots.id = lot_id) AS contacts FROM bets
+        = "SELECT bets.dt_add, bets.value, lots.id AS lot_id, lots.lot_name, lots.path, lots.dt_end, lots.winner_id, categories.categoryName, (SELECT users.contacts FROM users JOIN lots ON lots.autor_id = users.id WHERE lots.id = bets.lot_id) AS contacts FROM bets
         JOIN lots ON bets.lot_id = lots.id
         JOIN users ON bets.user_id = users.id
         JOIN categories ON lots.categoryId = categories.id
-        WHERE bets.user_id = ? AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY lot_id, user_id)
+        WHERE bets.user_id = ? AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY  user_id, lot_id)
         ORDER BY bets.dt_add DESC ";
 
     $stmt = db_get_prepare_stmt($link, $sql, [$user]);

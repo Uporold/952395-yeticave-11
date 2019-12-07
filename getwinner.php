@@ -19,5 +19,6 @@ if (count($winners)) {
             ->setTo([$data['email'] => $data['user_name']])
             ->setBody($mail_content, 'text/html');
         $result = $mailer->send($message);
+
     }
 }

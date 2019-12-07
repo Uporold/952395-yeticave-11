@@ -13,7 +13,7 @@
             <?php foreach ($bets as $bet): ?>
                 <tr class="rates__item <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                                <?= 'rates__item--win'; ?>
-                               <?php elseif ((($bet['winner_id'] ==! (int)$_SESSION['user']['id'])) && (time() > strtotime($bet['dt_end']))): ?>
+                               <?php elseif ((($bet['winner_id'] !== (int)$_SESSION['user']['id'])) && (time() > strtotime($bet['dt_end']))): ?>
                                <?= 'rates__item--end'; ?>
                                <?php endif; ?>">
                     <td class="rates__info">
@@ -27,7 +27,7 @@
                                 <a href="/lot.php?id=<?= $bet['lot_id']; ?>"><?= esc($bet['lot_name']); ?>
                                 </a>
                             </h3>
-                            <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
+                            <?php if ((int)$bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                                 <p><?= esc($bet['contacts']); ?></p>
                             <?php endif; ?>
                         </div>
@@ -36,15 +36,16 @@
                         <?= $bet['categoryName']; ?>
                     </td>
                     <td class="rates__timer">
-                        <?php if ($bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
+                        <?php if ((int)$bet['winner_id'] === (int)$_SESSION['user']['id']): ?>
                             <div class="timer timer--win">Ставка выиграла</div>
-                        <?php elseif (($bet['winner_id'] ==! (int)$_SESSION['user']['id']) && (time() > strtotime($bet['dt_end']))): ?>
+                        <?php elseif (((int)$bet['winner_id'] !== (int)$_SESSION['user']['id']) && (time() > strtotime($bet['dt_end']))): ?>
                             <div class="timer timer--end">Торги окончены</div>
                         <?php else: ?>
-                            <div class="timer <?php if (timeExp($bet['dt_end'])) echo 'timer--finishing'; ?>">
+                            <div class="timer <?php if (timeExp($bet['dt_end'])['часы'] < 1) echo ' timer--finishing'; ?>">
                                 <?= implode(":", timeExp($bet['dt_end'])); ?>
                             </div>
                         <?php endif; ?>
+
                     </td>
                     <td class="rates__price">
                         <?= priceFormatting($bet['value']); ?></b>

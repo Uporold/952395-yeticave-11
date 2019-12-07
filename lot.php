@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $error = "Нельзя делать ставку на свой лот!";
         } elseif (strtotime($lots[0]['dt_end']) < time()) {
             $error = "Нельзя делать ставку на проданный лот!";
-        } elseif (($bets[0]['user_id'] ?? 0) === $_SESSION['user']['id']) {
+        }elseif (($bets[0]['user_id'] ?? 0) === $_SESSION['user']['id']) {
             $error = "Вашу ставку еще не перебили!";
         }
         if (isset($error)) {
