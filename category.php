@@ -3,6 +3,8 @@ require_once 'functions.php';
 require_once 'init.php';
 $container = 0;
 $lots = [];
+$sort_field = null;
+$page_content = null;
 
 $tab = filter_input(INPUT_GET, 'tab');
 if (isset($tab)) {
@@ -10,33 +12,15 @@ if (isset($tab)) {
 }
 $current_page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?? 1;
 $page_items = 9;
-$sql = 'SELECT COUNT(*) as count FROM lots '
-    .'JOIN categories ON categories.id = lots.categoryId '
-    .'WHERE categories.code = (?) AND dt_end > NOW()'
-    .'ORDER BY dt_add DESC LIMIT 9';
-$stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$items_count = mysqli_fetch_assoc($result)['count'];
+$items_count = mysqli_fetch_assoc(getLotsCountByCategoryCode($link,
+    $sort_field))['count'];
 $pages_count = ceil($items_count / $page_items);
 $pages = range(1, $pages_count);
 
-$sql = 'SELECT categoryName FROM categories '
-    .' WHERE code = (?) ';
-$stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$categoryName = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$categoryName = mysqli_fetch_all(getCategoryNameByCode($link, $sort_field),
+    MYSQLI_ASSOC);
 
-$sql
-    = 'SELECT lots.id, lot_name, st_price, path, dt_end, categories.categoryName  FROM lots '
-    .'JOIN categories ON categories.id = lots.categoryId '
-    .'WHERE categories.code =(?) AND dt_end > NOW()'
-    .'ORDER BY dt_add DESC ';
-$stmt = db_get_prepare_stmt($link, pagination($sql, $page_items, $current_page),
-    [$sort_field]);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
+$result = getLotsByCategoryCode($link, $sort_field, $page_items, $current_page);
 
 if ($result) {
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);

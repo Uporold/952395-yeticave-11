@@ -36,7 +36,7 @@
     </div>
     <?php if (isset($errors)): ?>
     <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.
-          <?php foreach ($errors as $key => $error): ?>
+          <?php foreach ($errors as $error): ?>
               <li><strong><?= $error ?? null; ?></strong></li>
           <?php endforeach; ?></span>
           <?php endif;?>

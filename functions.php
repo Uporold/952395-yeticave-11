@@ -304,9 +304,10 @@ function pagination($sql, $page_items, $cur_page)
  */
 function getLotByID($link, $lot_id)
 {
-    if ($result = mysqli_query($link,
-        'SELECT * FROM lots WHERE id ='.$lot_id)
-    ) {
+    $sql = "SELECT * FROM lots WHERE id ='$lot_id'";
+    $result = mysqli_query($link, $sql);
+    $num = mysqli_num_rows($result);
+    if ($num) {
         return true;
     }
 
@@ -332,4 +333,380 @@ function emptyFieldErrors($requiredFields, $errors)
     }
 
     return $errors;
+}
+
+/**
+ * Выполняет запрос к бд на получение страницы лота
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $lotId Экранированный ID лота
+ *
+ * @return object $lotResult объект mysqli_result
+ */
+function getLot($link, $lotId)
+{
+    $lotSql
+        = "SELECT lots.*, categories.categoryName, MAX(bets.value) AS current_price FROM bets
+JOIN lots ON bets.lot_id = lots.id
+JOIN categories ON lots.categoryId = categories.id
+WHERE lots.id = '$lotId'";
+    $lotResult = mysqli_query($link, $lotSql);
+
+    return $lotResult;
+}
+
+/**
+ * Выполняет запрос к бд на получение ставок лота по его ID
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $lotId Экранированный ID лота
+ *
+ * @return object $betsResult объект mysqli_result
+ */
+function getLotBets($link, $lotId)
+{
+    $betsSql = "SELECT user_id, users.name, bets.value, bets.dt_add FROM bets
+    JOIN users ON user_id = users.id
+    WHERE bets.lot_id = '$lotId' ORDER BY dt_add DESC";
+    $betsResult = mysqli_query($link, $betsSql);
+
+    return $betsResult;
+}
+
+/**
+ * Выполняет запрос к бд на получение количества ставок лота по его ID
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $lotId Экранированный ID лота
+ *
+ * @return object $betsCountResult объект mysqli_result
+ */
+function getLotBetsCount($link, $lotId)
+{
+    $betsCountSql
+        = "SELECT COUNT(*) AS count FROM bets WHERE lot_id = '$lotId'";
+    $betsCountResult = mysqli_query($link, $betsCountSql);
+
+    return $betsCountResult;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на получение количества лотов,
+ * которые соответствуют коду категории
+ *
+ * @param        $link       mysqli Ресурс соединения
+ * @param string $sort_field Экранированный код катетегории
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getLotsCountByCategoryCode($link, $sort_field)
+{
+    $sql = "SELECT COUNT(*) as count FROM lots
+    JOIN categories ON categories.id = lots.categoryId
+    WHERE categories.code = (?) AND dt_end > NOW()
+    ORDER BY dt_add DESC LIMIT 9";
+    $stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на получение количества лотов,
+ * которые соответствуют коду категории
+ *
+ * @param        $link       mysqli Ресурс соединения
+ * @param string $sort_field Экранированный код катетегории
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getCategoryNameByCode($link, $sort_field)
+{
+    $sql = "SELECT categoryName FROM categories
+    WHERE code = (?) ";
+    $stmt = db_get_prepare_stmt($link, $sql, [$sort_field]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на получение лотов,
+ * которые соответствуют коду категории
+ *
+ * @param        $link         mysqli Ресурс соединения
+ * @param string $sort_field   код категории
+ * @param int    $page_items   количество лотов на страницу
+ * @param int    $current_page текущая страница
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getLotsByCategoryCode($link, $sort_field, $page_items, $current_page)
+{
+    $sql
+        = "SELECT lots.id, lot_name, st_price, path, dt_end, categories.categoryName  FROM lots
+    JOIN categories ON categories.id = lots.categoryId
+    WHERE categories.code =(?) AND dt_end > NOW()
+    ORDER BY dt_add DESC ";
+    $stmt = db_get_prepare_stmt($link,
+        pagination($sql, $page_items, $current_page),
+        [$sort_field]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на списка ставок
+ * залогиненного пользователя
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $user  Экранированное значение ID залогиненного пользователя
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getUserBets($link, $user)
+{
+    $sql
+        = "SELECT bets.dt_add, bets.value, lots.id AS lot_id, lots.lot_name, lots.path, lots.dt_end, lots.winner_id, categories.categoryName, (SELECT users.contacts FROM users JOIN lots ON lots.autor_id = users.id WHERE lots.id = lot_id) AS contacts FROM bets
+        JOIN lots ON bets.lot_id = lots.id
+        JOIN users ON bets.user_id = users.id
+        JOIN categories ON lots.categoryId = categories.id
+        WHERE bets.user_id = ? AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY lot_id, user_id)
+        ORDER BY bets.dt_add DESC ";
+
+    $stmt = db_get_prepare_stmt($link, $sql, [$user]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос к бд на поиск ID пользователя с заданным email
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $email email пользователя
+ *
+ * @return object $result объект mysqli_query
+ */
+function getUserIDByEmail($link, $email)
+{
+    $sql = "SELECT id FROM users WHERE email = '$email'";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос в бд на добавление нового пользователя с указанными данными
+ *
+ * @param        $link     mysqli Ресурс соединения
+ * @param string $email    email пользователя
+ * @param string $name     имя пользователя
+ * @param string $password пароль пользователя
+ * @param string $contacts контакты пользователя
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function insertUser($link, $email, $name, $password, $contacts)
+{
+    $sql
+        = 'INSERT INTO users (dt_reg, email, name, password, contacts) VALUES (NOW(), ?, ?, ?, ?)';
+    $stmt = db_get_prepare_stmt($link, $sql,
+        [$email, $name, $password, $contacts]);
+    $result = mysqli_stmt_execute($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос к бд на поиск данных пользователя с заданным email
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $email email пользователя
+ *
+ * @return object $result объект mysqli_query
+ */
+function getUserByEmail($link, $email)
+{
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос на поиск последних добавленных 9 лотов
+ *
+ * @param        $link  mysqli Ресурс соединения
+ *
+ * @return object $result объект mysqli_query
+ */
+function getLastLots($link)
+{
+    $sql
+        = "SELECT lots.id, lot_name, st_price, path, dt_end, categories.categoryName  FROM lots
+    JOIN categories ON categories.id = lots.categoryId
+    WHERE dt_end > NOW()
+    ORDER BY dt_add DESC LIMIT 9";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос на поиск лотов, время которых истекло,
+ * пользователю с максимальной ставкой становится победителем
+ *
+ * @param        $link  mysqli Ресурс соединения
+ *
+ * @return object $result объект mysqli_query
+ */
+function getWinners($link)
+{
+    $sql = "SELECT bets.* FROM bets
+    WHERE lot_id IN (SELECT id FROM lots WHERE dt_end < NOW() AND winner_id IS NULL)
+    AND bets.value IN (SELECT MAX(bets.value) FROM bets GROUP BY lot_id)";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос на добавление к лоту победителя
+ *
+ * @param        $link  mysqli Ресурс соединения
+ *
+ * @return object $result объект mysqli_query
+ */
+function updateWinners($link, $user_id, $lot_id)
+{
+    $sql = "UPDATE lots SET winner_id = {$user_id} WHERE id = {$lot_id}";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос на получение данных победителя
+ *
+ * @param        $link  mysqli Ресурс соединения
+ *
+ * @return object $result объект mysqli_query
+ */
+function getWinnersData($link, $lot_id)
+{
+    $sql
+        = "SELECT lots.id, lots.lot_name AS lot_name, users.email, users.name AS user_name FROM lots
+    JOIN users ON lots.autor_id = users.id
+    WHERE lots.id = {$lot_id}";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на получение количества лотов,
+ * которые соответствуют написанному в поисковой строке
+ *
+ * @param        $link       mysqli Ресурс соединения
+ * @param string $sort_field поисковой запрос
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getLotsCountBySearch($link, $search)
+{
+    $sql = "SELECT COUNT(*) as count FROM lots "
+        ."JOIN categories ON lots.categoryId  = categories.id "
+        ."WHERE MATCH(lot_name, text) AGAINST(?) AND dt_end > NOW()";
+    $stmt = db_get_prepare_stmt($link, $sql, [$search]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на получение количества лотов,
+ * которые соответствуют написанному в поисковой строке
+ *
+ * @param        $link         mysqli Ресурс соединения
+ * @param string $sort_field   поисковой запрос
+ * @param int    $page_items   количество лотов на страницу
+ * @param int    $current_page текущая страница
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function getLotsBySearch($link, $search, $page_items, $current_page)
+{
+    $sql
+        = "SELECT lots.id, lot_name, categoryId, categoryName, st_price, path, dt_add, dt_end, text, bet_step FROM lots "
+        ."JOIN categories ON lots.categoryId  = categories.id "
+        ."WHERE MATCH(lot_name, text) AGAINST(?) AND dt_end > NOW() "
+        ."ORDER BY dt_add DESC ";
+    $stmt = db_get_prepare_stmt($link,
+        pagination($sql, $page_items, $current_page), [$search]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на публикацию лота
+ *
+ * @param        $link  mysqli Ресурс соединения
+ * @param string $user  ID залогиненного пользователя
+ * @param array  $lot   массив из полей формы
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function addLot($link, $user, $lot)
+{
+    $sql = "INSERT INTO lots (dt_add, autor_id, lot_name, text, st_price, bet_step, dt_end, categoryId, path)
+    VALUES (NOW(), {$user}, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = db_get_prepare_stmt($link, $sql, $lot);
+    $result = mysqli_stmt_execute($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет подготовленный запрос к бд на публикацию ставки
+ *
+ * @param        $link   mysqli Ресурс соединения
+ * @param string $user   ID залогиненного пользователя
+ * @param int    $lot_id ID лота
+ * @param string $value  значение ставки из формы
+ *
+ * @return object $result объект mysqli_stmt_get_result
+ */
+function addBet($link, $user, $lot_id, $value)
+{
+    $sql
+        = "INSERT INTO bets (dt_add, user_id, lot_id, value) VALUES (NOW(), ?, ?, ?)";
+    $stmt = db_get_prepare_stmt($link, $sql,
+        [$user, $lot_id, $value]);
+    $result = mysqli_stmt_execute($stmt);
+
+    return $result;
+}
+
+/**
+ * Выполняет запрос к бд получение категорий
+ *
+ * @param        $link  mysqli Ресурс соединения
+ *
+ * @return object $result объект mysqli_query
+ */
+function getCategories($link)
+{
+    $sql = "SELECT id, categoryName, code FROM categories";
+    $result = mysqli_query($link, $sql);
+
+    return $result;
 }

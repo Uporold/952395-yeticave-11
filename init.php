@@ -16,10 +16,9 @@ if ($link === false) {
     $page_content = include_template('error.php', ['error' => $error]);
     $categories = 0;
 }
-$sql = 'SELECT `id`, `categoryName`, `code` FROM categories';
-$result = mysqli_query($link, $sql);
-if ($result) {
-    $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+if (getCategories($link)) {
+    $categories = mysqli_fetch_all(getCategories($link), MYSQLI_ASSOC);
 }
 
 

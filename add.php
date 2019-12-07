@@ -1,11 +1,15 @@
 <?php
 require_once 'functions.php';
 require_once 'init.php';
-
 $container = 0;
+
 $categoryIds = [];
+$error = null;
+$errors = [];
+$lot = [];
 $categoryIds = array_column($categories, 'id');
 $page_content = include_template('_add.php', ['categories' => $categories]);
+
 if (isset($_SESSION['user'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $requiredFields = [
@@ -16,7 +20,6 @@ if (isset($_SESSION['user'])) {
             'bet_step' => '"Шаг ставки"',
             'dt_end' => '"Дата окончания торгов"',
         ];
-        $errors = [];
 
         $lot = filter_input_array(INPUT_POST, [
             'lot_name' => FILTER_DEFAULT,
@@ -73,9 +76,12 @@ if (isset($_SESSION['user'])) {
             $filename = uniqid().'.jpg';
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $file_type = finfo_file($finfo, $tmp_name);
+            if ($file_type === "image/png") {
+                $filename = uniqid().'.png';
+            }
             if ($file_type !== "image/jpeg" && $file_type !== "image/png") {
                 $errors['lot_img'] = 'Загрузите картинку в формате JPG или PNG';
-            } else {
+            } elseif (!count($errors)) {
                 move_uploaded_file($tmp_name, 'uploads/'.$filename);
                 $lot['path'] = $filename;
             }
@@ -88,10 +94,8 @@ if (isset($_SESSION['user'])) {
             $page_content = include_template('_add.php',
                 compact('lot', 'errors', 'categories'));
         } else {
-            $sql = 'INSERT INTO lots (dt_add, autor_id, lot_name, text, st_price, bet_step, dt_end, categoryId, path)
-        VALUES (NOW(), "'.$_SESSION['user']['id'].'", ?, ?, ?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($link, $sql, $lot);
-            $result = mysqli_stmt_execute($stmt);
+            $user = $_SESSION['user']['id'];
+            $result = addLot($link, $user, $lot);
 
             if ($result) {
                 $lot_id = mysqli_insert_id($link);

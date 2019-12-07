@@ -35,9 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['email'] = 'Введите корректный email';
         }
         $email = mysqli_real_escape_string($link, $form['email']);
-        $sql = "SELECT id FROM users WHERE email = '$email'";
-        $result = mysqli_query($link, $sql);
-        if (mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows(getUserIDByEmail($link, $email)) > 0) {
             $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
         }
     }
@@ -66,14 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($form['password'])) {
             $password = password_hash($form['password'], PASSWORD_DEFAULT);
         }
-
-        $sql
-            = 'INSERT INTO users (dt_reg, email, name, password, contacts) VALUES (NOW(), ?, ?, ?, ?)';
-        $stmt = db_get_prepare_stmt($link, $sql,
-            [$form['email'], $form['name'], $password, $form['contacts']]);
-        $result = mysqli_stmt_execute($stmt);
-
-        if ($result && empty($errors)) {
+        if (insertUser($link, $form['email'], $form['name'], $password,
+                $form['contacts'])
+            && empty($errors)
+        ) {
             header("Location: /login.php");
             exit();
         }
@@ -81,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $page_content = include_template('_reg.php',
-    compact('categories', 'errors', 'error', 'key'));
+    compact('categories', 'errors'));
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'container' => $container,

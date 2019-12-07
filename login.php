@@ -2,6 +2,11 @@
 require_once 'init.php';
 require_once 'functions.php';
 $container = 0;
+$page_content = null;
+$errors = null;
+$form = null;
+$email = null;
+$password = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form = $_POST;
@@ -13,8 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     $email = mysqli_real_escape_string($link, $form['email']);
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $result = mysqli_query($link, $sql);
+    $result = getUserByEmail($link, $email);
 
     $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
 
